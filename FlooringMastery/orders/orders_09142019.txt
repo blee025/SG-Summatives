@@ -1,0 +1,3 @@
+OrderNumber,CustomerName,State,TaxRate,ProductType,Area,CostPerSquareFoot,LaborCostPerSquareFoot,MaterialCost,LaborCost,Tax,Total
+1,timayy,FL,6.00,Wood,50,5.15,4.75,257.50,237.50,29.70,524.70
+2,sammeyyy,WA,6.50,Bamboo,53,6.25,5.65,331.25,299.45,41.00,671.70

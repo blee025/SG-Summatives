@@ -1,0 +1,4 @@
+OrderNumber,CustomerName,State,TaxRate,ProductType,Area,CostPerSquareFoot,LaborCostPerSquareFoot
+1,Victor,CA,7.25,Carpet,123.00,2.25,2.10,276.75,258.30,38.79,573.84
+2,Noel,IN,6.00,Laminate,89.00,1.75,2.10,155.75,186.90,20.56,363.21
+3,Cam,PA,6.75,Tile,37.00,3.50,4.15,129.50,153.55,19.11,302.16

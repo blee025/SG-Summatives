@@ -1,0 +1,4 @@
+OrderNumber,CustomerName,State,TaxRate,ProductType,Area,CostPerSquareFoot,LaborCostPerSquareFoot,MaterialCost,LaborCost,Tax,Total
+1,Sevy,WA,6.50,Wood,56,5.15,4.75,288.40,266.00,36.04,590.44
+3,fdddd,VA,4.30,Bamboo,455,6.25,5.65,2843.75,2570.75,232.82,5647.32
+2,jim,PA,6.75,Vinyl,443,4.45,3.63,1971.35,1608.09,241.61,3821.05

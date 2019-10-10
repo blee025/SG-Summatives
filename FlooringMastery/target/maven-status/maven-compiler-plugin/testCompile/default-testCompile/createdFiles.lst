@@ -1,0 +1,10 @@
+sg\flooringmastery\daos\FlooringOrderFileDaoTest.class
+sg\flooringmastery\service\FlooringServiceImplTest.class
+sg\flooringmastery\daos\FlooringOrderInMemoDao.class
+sg\flooringmastery\daos\AlwaysFailProductDao.class
+sg\flooringmastery\daos\AlwaysFailOrderDao.class
+sg\flooringmastery\daos\AlwaysFailTaxDao.class
+sg\flooringmastery\daos\FlooringProductFileDaoTest.class
+sg\flooringmastery\daos\FlooringProductInMemoDao.class
+sg\flooringmastery\daos\FlooringTaxFileDaoTest.class
+sg\flooringmastery\daos\FlooringTaxInMemoDao.class

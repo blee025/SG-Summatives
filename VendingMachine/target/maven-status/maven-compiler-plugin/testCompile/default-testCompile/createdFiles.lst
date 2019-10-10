@@ -1,0 +1,4 @@
+sg\vendingmachine\dao\VendingMachineDaoStub.class
+sg\vendingmachine\service\VendingMachineServiceLayerTest.class
+sg\vendingmachine\dao\VendingMachineDaoTest.class
+sg\vendingmachine\dao\AlwaysFailDao.class
