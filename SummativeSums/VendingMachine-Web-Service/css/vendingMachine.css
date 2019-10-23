@@ -1,0 +1,11 @@
+.r1 div, .r2 div, .r3 div{
+    padding: 33px 31px;
+}
+
+.r1 .button, .r2 .button, .r3 .button{
+    border: thin solid black;
+}
+
+#borderless{
+    border: none;
+}

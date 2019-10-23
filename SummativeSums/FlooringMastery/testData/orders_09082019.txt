@@ -1,0 +1,4 @@
+OrderNumber,CustomerName,State,TaxRate,ProductType,Area,CostPerSquareFoot,LaborCostPerSquareFoot
+1,Sally,FL,6.00,Laminate,103.00,1.75,2.10,180.25,216.30,23.79,420.34
+2,Ally,NY,4.00,Cork,76.00,2.79,3.12,212.04,237.12,17.97,467.13
+3,Mark,VA,4.30,Tile,202.00,3.50,4.15,707.00,838.30,66.45,1611.75

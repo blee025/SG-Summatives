@@ -1,0 +1,4 @@
+OrderNumber,CustomerName,State,TaxRate,ProductType,Area,CostPerSquareFoot,LaborCostPerSquareFoot
+1,Will,OH,6.25,Wood,100.00,5.15,4.75,515.00,475.00,61.88,1051.88
+2,Fred,WA,6.50,Stone,83.00,6.86,6.34,569.38,526.22,71.21,1166.81
+3,George,CO,2.90,Bamboo,143.00,6.25,5.65,893.75,807.95,49.35,1751.05

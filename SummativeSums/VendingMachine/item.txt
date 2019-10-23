@@ -1,0 +1,4 @@
+1::Snickers::1.50::2
+2::Crackers::2.50::18
+3::Starbursts::1.00::19
+4::Twix::2.00::2
