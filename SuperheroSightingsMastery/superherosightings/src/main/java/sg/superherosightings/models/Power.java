@@ -5,6 +5,9 @@
  */
 package sg.superherosightings.models;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
 /**
  *
  * @author blee0
@@ -12,6 +15,9 @@ package sg.superherosightings.models;
 public class Power {
     
     private int id;
+    
+    @NotBlank(message = "Name must not be empty.")
+    @Size(max = 30, message = "Name must be less than 30 characters.")
     private String name;
 
     public int getId() {

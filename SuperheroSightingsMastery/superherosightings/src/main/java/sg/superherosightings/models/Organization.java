@@ -6,6 +6,8 @@
 package sg.superherosightings.models;
 
 import java.util.List;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 /**
  *
@@ -14,9 +16,19 @@ import java.util.List;
 public class Organization {
 
     private int id;
+    
+    @NotBlank(message = "Name must not be empty.")
+    @Size(max = 30, message = "Name must be less than 30 characters.")
     private String name;
+    
+    @NotBlank(message = "Description must not be empty.")
+    @Size(max = 150, message = "Description must be less than 150 characters.")
     private String description;
+    
+    @NotBlank(message = "Address must not be empty.")
+    @Size(max = 60, message = "Address must be less than 60 characters.")
     private String address;
+    
     private List<Supe> supes;
 
     public int getId() {

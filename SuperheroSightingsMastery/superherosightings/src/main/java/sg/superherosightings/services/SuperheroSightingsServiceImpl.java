@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import sg.superherosightings.daos.InvalidIdException;
 import sg.superherosightings.daos.SuperheroSightingsDao;
 import sg.superherosightings.daos.SuperheroSightingsDaoException;
 import sg.superherosightings.models.Location;
@@ -37,10 +38,10 @@ public class SuperheroSightingsServiceImpl implements SuperheroSightingsService 
     public List<Supe> getAllSupes() {
 
         List<Supe> toReturn = dao.getAllSupes();
-        
+
         for (Supe supe : toReturn) {
             List<Organization> toAdd = dao.getOrganizationsBySupe(supe.getId());
-            supe.setOrganizations(toAdd); 
+            supe.setOrganizations(toAdd);
         }
 
         return toReturn;
@@ -57,23 +58,57 @@ public class SuperheroSightingsServiceImpl implements SuperheroSightingsService 
     }
 
     @Override
-    public Supe getSupeById(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Supe getSupeById(int id) throws InvalidIdException {
+
+        Supe toReturn = dao.getSupeById(id);
+
+        List<Organization> toAdd = dao.getOrganizationsBySupe(id);
+
+        toReturn.setOrganizations(toAdd);
+
+        return toReturn;
     }
 
     @Override
-    public Supe addSupe(Supe toAdd) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Supe addSupe(Supe toAdd) throws SuperheroSightingsServiceException, InvalidIdException {
+        Supe toReturn = null;
+        try {
+            toReturn = dao.addSupe(toAdd);
+        } catch (SuperheroSightingsDaoException ex) {
+            throw new SuperheroSightingsServiceException("Unable to add Super", ex);
+        }
+
+        int newSupeId = toReturn.getId();
+        List<Organization> allOrganizations = toAdd.getOrganizations();
+
+        for (Organization org : allOrganizations) {
+            dao.addSupeOrganization(org.getId(), newSupeId);
+        }
+
+        return toReturn;
     }
 
     @Override
-    public void updateSupe(Supe updatedSupe) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void updateSupe(Supe updatedSupe) throws InvalidIdException, SuperheroSightingsServiceException {
+
+        try {
+            dao.updateSupe(updatedSupe);
+        } catch (SuperheroSightingsDaoException ex) {
+            throw new SuperheroSightingsServiceException("Unable to update Super", ex);
+        }
+
+        dao.deleteSupeOrganizationBySupeId(updatedSupe.getId());
+
+        List<Organization> allOrgs = updatedSupe.getOrganizations();
+
+        for (Organization org : allOrgs) {
+            dao.addSupeOrganization(org.getId(), updatedSupe.getId());
+        }
     }
 
     @Override
-    public void deleteSupebyId(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void deleteSupebyId(int id) throws InvalidIdException {
+        dao.deleteSupeById(id);
     }
 
     @Override
@@ -85,8 +120,11 @@ public class SuperheroSightingsServiceImpl implements SuperheroSightingsService 
     }
 
     @Override
-    public Power getPowerById(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Power getPowerById(int id) throws InvalidIdException {
+
+        Power toReturn = dao.getPowerById(id);
+
+        return toReturn;
     }
 
     @Override
@@ -97,25 +135,29 @@ public class SuperheroSightingsServiceImpl implements SuperheroSightingsService 
         } catch (SuperheroSightingsDaoException ex) {
             throw new SuperheroSightingsServiceException("Unable to add Power", ex);
         }
-        
+
         return toReturn;
     }
 
     @Override
-    public void updatePower(Power updatedPower) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void updatePower(Power updatedPower) throws InvalidIdException, SuperheroSightingsServiceException {
+        try {
+            dao.updatePower(updatedPower);
+        } catch (SuperheroSightingsDaoException ex) {
+            throw new SuperheroSightingsServiceException("Unable to update Power", ex);
+        }
     }
 
     @Override
-    public void deletePowerById(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void deletePowerById(int id) throws InvalidIdException {
+        dao.deletePowerById(id);
     }
 
     @Override
     public List<Organization> getAllOrganizations() {
 
         List<Organization> toReturn = dao.getAllOrganizations();
-        
+
         for (Organization organization : toReturn) {
             List<Supe> toAdd = dao.getSupesByOrganization(organization.getId());
             organization.setSupes(toAdd);
@@ -130,30 +172,58 @@ public class SuperheroSightingsServiceImpl implements SuperheroSightingsService 
     }
 
     @Override
-    public Organization getOrganizationById(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Organization getOrganizationById(int id) throws InvalidIdException {
+
+        Organization toReturn = dao.getOrganizationById(id);
+
+        List<Supe> supes = dao.getSupesByOrganization(id);
+
+        toReturn.setSupes(supes);
+
+        return toReturn;
     }
 
     @Override
-    public Organization addOrganization(Organization toAdd) throws SuperheroSightingsServiceException {
+    public Organization addOrganization(Organization toAdd) throws SuperheroSightingsServiceException, InvalidIdException {
         Organization toReturn = null;
         try {
             toReturn = dao.addOrganization(toAdd);
         } catch (SuperheroSightingsDaoException ex) {
             throw new SuperheroSightingsServiceException("Unable to add Organization", ex);
         }
-        
+
+        int newOrgId = toReturn.getId();
+        List<Supe> allSupes = toAdd.getSupes();
+
+        for (Supe superHero : allSupes) {
+            dao.addSupeOrganization(newOrgId, superHero.getId());
+        }
+
         return toReturn;
     }
 
     @Override
-    public void updateOrganization(Organization updatedOrganization) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void updateOrganization(Organization updatedOrganization) throws SuperheroSightingsServiceException, InvalidIdException {
+
+        try {
+            dao.updateOrganization(updatedOrganization);
+        } catch (SuperheroSightingsDaoException ex) {
+            throw new SuperheroSightingsServiceException("Unable to update Organization", ex);
+        }
+
+        dao.deleteSupeOrganizationByOrganizationId(updatedOrganization.getId());
+
+        List<Supe> allSupes = updatedOrganization.getSupes();
+
+        for (Supe supe : allSupes) {
+            dao.addSupeOrganization(updatedOrganization.getId(), supe.getId());
+        }
+
     }
 
     @Override
-    public void deleteOrganziationById(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void deleteOrganizationById(int id) throws InvalidIdException {
+        dao.deleteOrganizationById(id);
     }
 
     @Override
@@ -170,8 +240,10 @@ public class SuperheroSightingsServiceImpl implements SuperheroSightingsService 
     }
 
     @Override
-    public Location getLocationById(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Location getLocationById(int id) throws InvalidIdException {
+        Location toReturn = dao.getLocationById(id);
+
+        return toReturn;
     }
 
     @Override
@@ -182,18 +254,23 @@ public class SuperheroSightingsServiceImpl implements SuperheroSightingsService 
         } catch (SuperheroSightingsDaoException ex) {
             throw new SuperheroSightingsServiceException("Unable to add Location", ex);
         }
-        
+
         return toReturn;
     }
 
     @Override
-    public void updateLocation(Location updatedLocation) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void updateLocation(Location updatedLocation) throws InvalidIdException, SuperheroSightingsServiceException {
+
+        try {
+            dao.updateLocation(updatedLocation);
+        } catch (SuperheroSightingsDaoException ex) {
+            throw new SuperheroSightingsServiceException("Unable to update Location", ex);
+        }
     }
 
     @Override
-    public void deleteLocationById(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void deleteLocationById(int id) throws InvalidIdException {
+        dao.deleteLocationById(id);
     }
 
     @Override
@@ -210,23 +287,38 @@ public class SuperheroSightingsServiceImpl implements SuperheroSightingsService 
     }
 
     @Override
-    public Sighting getSightingById(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Sighting getSightingById(int id) throws InvalidIdException {
+
+        Sighting toReturn = dao.getSightingById(id);
+
+        return toReturn;
     }
 
     @Override
-    public Sighting addSighting(Sighting toAdd) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Sighting addSighting(Sighting toAdd) throws SuperheroSightingsServiceException, InvalidIdException {
+        Sighting toReturn = null;
+
+        try {
+            toReturn = dao.addSighting(toAdd);
+        } catch (SuperheroSightingsDaoException ex) {
+            throw new SuperheroSightingsServiceException("Unable to add Sighting", ex);
+        }
+
+        return toReturn;
     }
 
     @Override
-    public void updateSighting(Sighting updatedSighting) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void updateSighting(Sighting updatedSighting) throws InvalidIdException, SuperheroSightingsServiceException {
+        try {
+            dao.updateSighting(updatedSighting);
+        } catch (SuperheroSightingsDaoException ex) {
+            throw new SuperheroSightingsServiceException("Unable to update Sighting", ex);
+        }
     }
 
     @Override
-    public void deleteSightingById(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void deleteSightingById(int id) throws InvalidIdException {
+        dao.deleteSightingById(id);
     }
 
 }

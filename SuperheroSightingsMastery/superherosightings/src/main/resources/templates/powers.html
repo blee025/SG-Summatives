@@ -37,8 +37,13 @@
                     <a href="sightings" class="btn btn-outline-primary btn-lg">Sightings</a>
                 </div>
             </div>
-            
+
             <div class="row m-4 border border-dark">
+                <div class="col-12 m-1 text-center" 
+                     th:if="${!errors.isEmpty()}">
+                    <p class="alert alert-danger" th:each="error : ${errors}" 
+                       th:text="${error.message}">Error message</p>
+                </div>
                 <div class="col-3 text-center m-3">
                     <span class="h3">Add Power</span>
                 </div>
@@ -56,8 +61,8 @@
                     </form>
                 </div>
             </div>
-            
-            
+
+
             <div class="row m-4 border border-dark">
                 <div class="col text-center m-3">
                     <table class="table table-striped">
@@ -73,8 +78,8 @@
                             <tr th:each="power : ${powers}">
                                 <td th:text="${power.id}">Superhero ID</td>
                                 <td th:text="${power.name}">Superhero Name</td>
-                                <td>Edit</td>
-                                <td>Delete</td>
+                                <td><a href="#" th:href="@{/editPower(id=${power.id})}">Edit</a></td>
+                                <td><a href="#" th:href="@{/deletePower(id=${power.id})}">Delete</a></td>
                             </tr>
                         </tbody>
                     </table>

@@ -47,7 +47,7 @@ public interface SuperheroSightingsDao {
 
     public void updateSupe(Supe updatedSup) throws InvalidIdException, SuperheroSightingsDaoException;
 
-    public void deleteSupebyId(int id) throws InvalidIdException;
+    public void deleteSupeById(int id) throws InvalidIdException;
 
     public List<Organization> getAllOrganizations();
 
@@ -57,11 +57,13 @@ public interface SuperheroSightingsDao {
 
     public void updateOrganization(Organization updatedOrganization) throws InvalidIdException, SuperheroSightingsDaoException;
 
-    public void deleteOrganziationById(int id) throws InvalidIdException;
+    public void deleteOrganizationById(int id) throws InvalidIdException;
     
     public void addSupeOrganization(int organizationId, int supeId) throws InvalidIdException;
     
-    public void deleteSupeOrganization(int organizationId, int supeId) throws InvalidIdException; 
+    public void deleteSupeOrganizationBySupeId(int supeId) throws InvalidIdException; 
+    
+    public void deleteSupeOrganizationByOrganizationId(int organizationId) throws InvalidIdException; 
 
     public List<Location> getAllLocations();
 

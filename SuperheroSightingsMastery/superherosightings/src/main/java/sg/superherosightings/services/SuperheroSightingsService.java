@@ -7,6 +7,7 @@ package sg.superherosightings.services;
 
 import java.time.LocalDate;
 import java.util.List;
+import sg.superherosightings.daos.InvalidIdException;
 import sg.superherosightings.models.Location;
 import sg.superherosightings.models.Organization;
 import sg.superherosightings.models.Power;
@@ -25,58 +26,58 @@ public interface SuperheroSightingsService {
 
     public List<Supe> getSupesByLocation(int id);
 
-    public Supe getSupeById(int id);
+    public Supe getSupeById(int id) throws InvalidIdException;
 
-    public Supe addSupe(Supe toAdd);
+    public Supe addSupe(Supe toAdd) throws SuperheroSightingsServiceException, InvalidIdException;
 
-    public void updateSupe(Supe updatedSupe);
+    public void updateSupe(Supe updatedSupe) throws InvalidIdException, SuperheroSightingsServiceException;
 
-    public void deleteSupebyId(int id);
+    public void deleteSupebyId(int id) throws InvalidIdException;
 
     public List<Power> getAllPowers();
 
-    public Power getPowerById(int id);
+    public Power getPowerById(int id) throws InvalidIdException;
 
     public Power addPower(Power toAdd) throws SuperheroSightingsServiceException;
 
-    public void updatePower(Power updatedPower);
+    public void updatePower(Power updatedPower) throws InvalidIdException, SuperheroSightingsServiceException;
 
-    public void deletePowerById(int id);
+    public void deletePowerById(int id) throws InvalidIdException;
 
     public List<Organization> getAllOrganizations();
 
     public List<Organization> getOrganizationsBySupe(int id);
 
-    public Organization getOrganizationById(int id);
+    public Organization getOrganizationById(int id) throws InvalidIdException;
 
-    public Organization addOrganization(Organization toAdd) throws SuperheroSightingsServiceException;
+    public Organization addOrganization(Organization toAdd) throws SuperheroSightingsServiceException, InvalidIdException;
 
-    public void updateOrganization(Organization updatedOrganization);
+    public void updateOrganization(Organization updatedOrganization) throws SuperheroSightingsServiceException, InvalidIdException;
 
-    public void deleteOrganziationById(int id);
+    public void deleteOrganizationById(int id) throws InvalidIdException;
     
     public List<Location> getAllLocations();
     
     public List<Location> getLocationsBySupe(int id);
     
-    public Location getLocationById(int id);
+    public Location getLocationById(int id) throws InvalidIdException;
     
     public Location addLocation(Location toAdd) throws SuperheroSightingsServiceException ;
     
-    public void updateLocation(Location updatedLocation);
+    public void updateLocation(Location updatedLocation) throws InvalidIdException, SuperheroSightingsServiceException;
     
-    public void deleteLocationById(int id);
+    public void deleteLocationById(int id) throws InvalidIdException;
     
     public List<Sighting> getAllSightings();
     
     public List<Sighting> getSightingsByDate(LocalDate date);
     
-    public Sighting getSightingById(int id);
+    public Sighting getSightingById(int id) throws InvalidIdException;
     
-    public Sighting addSighting(Sighting toAdd);
+    public Sighting addSighting(Sighting toAdd) throws SuperheroSightingsServiceException, InvalidIdException;
     
-    public void updateSighting(Sighting updatedSighting);
+    public void updateSighting(Sighting updatedSighting) throws InvalidIdException, SuperheroSightingsServiceException;
     
-    public void deleteSightingById(int id);
+    public void deleteSightingById(int id) throws InvalidIdException;
     
 }

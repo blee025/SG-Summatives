@@ -17,7 +17,7 @@
         <div class="container">
             <div class="row m-4">
                 <div class="col text-center border border-dark">
-                    <h1>Superheros</h1>
+                    <h1>Superheroes</h1>
                 </div>
             </div>
             <div class="row m-4 border border-dark">
@@ -37,6 +37,83 @@
                     <a href="sightings" class="btn btn-outline-primary btn-lg">Sightings</a>
                 </div>
             </div>
+
+
+
+            <div class="row m-4 border border-dark">
+<!--                <div class="col-12 m-1 text-center" 
+                     th:if="${!errors.isEmpty()}">
+                    <p class="alert alert-danger" th:each="error : ${errors}" 
+                       th:text="${error.message}">Error message</p>
+                </div>-->
+                <div class="col-3 text-center m-3">
+                    <span class="h3">Add Supe</span>
+                </div>
+                <div class="col-7 text-center m-3">
+                    <form action="addSupe" method="POST">
+                        <div class="form-group row">
+                            <label for="name" class="col-3 col-form-label">
+                                Name</label>
+                            <div class="col-9">
+                                <input type="text" name="name" 
+                                       id="name" class="form-control" th:value="${supe.name}"/>
+                                 <div th:if="${#fields.hasErrors('supe.name')}">
+                                    <p th:each="error : ${#fields.errors('supe.name')}" class="alert alert-danger"
+                                       th:text="${error}"> Bad Supe name </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="description" class="col-3 col-form-label">
+                                Description</label>
+                            <div class="col-9">
+                                <input type="text" name="description" 
+                                       id="description" class="form-control" th:value="${supe.description}"/>
+                                 <div th:if="${#fields.hasErrors('supe.description')}">
+                                    <p th:each="error : ${#fields.errors('supe.description')}" class="alert alert-danger"
+                                       th:text="${error}"> Bad Description </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="power" class="col-3 col-form-label">
+                                Power</label>
+                            <div class="col-9">
+                                <select id="power" name="powerId" class="form-control" >
+                                    <option th:each="power : ${powers}" 
+                                            th:value="${power.id}" 
+                                            th:text="${power.name}">
+                                        Power Name</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="organizations" class="col-3 col-form-label">
+                                Organizations</label>
+                            <div class="col-9">
+                                <select multiple id="organizations" name="organizationId" 
+                                        class="form-control">
+                                    <option th:each="organization : ${organizations}" 
+                                            th:value="${organization.id}" 
+                                            th:text="${organization.name}">
+                                        Organization Name</option>
+                                </select>
+                                <div th:if="${#fields.hasErrors('supe.organizations')}">
+                                    <p th:each="error : ${#fields.errors('supe.organizations')}" 
+                                       class="alert alert-danger" th:text="${error}"> 
+                                        Bad organization </p>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Supe</button>
+                    </form>
+                </div>
+            </div>
+
+
+
+
+
             <div class="row m-4 border border-dark">
                 <div class="col text-center m-3">
                     <table class="table table-striped">
@@ -46,20 +123,20 @@
                                 <th>Name</th>
                                 <th>Description</th>
                                 <th>Power</th>
-                                <th>Organizations</th>
+                                <th>Details</th>
                                 <th>Edit</th>
                                 <th>Delete</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="supe : ${supes}">
+                            <tr th:each="supe : ${supes}" >
                                 <td th:text="${supe.id}">Superhero ID</td>
                                 <td th:text="${supe.name}">Superhero Name</td>
                                 <td th:text="${supe.description}">Superhero Description</td>
                                 <td th:text="${supe.power.name}">Superhero Power</td>
-                                <td th:text="${supe.organizations}">Superhero Organizations</td>
-                                <td>Edit</td>
-                                <td>Delete</td>
+                                <td><a href="#" th:href="@{/supeDetail(id=${supe.id})}">Details</a></td>
+                                <td><a href="#" th:href="@{/editSupe(id=${supe.id})}">Edit</a></td>
+                                <td><a href="#" th:href="@{/deleteSupe(id=${supe.id})}">Delete</a></td>
                             </tr>
                         </tbody>
                     </table>

@@ -50,7 +50,11 @@
                                 Name</label>
                             <div class="col-9">
                                 <input type="text" name="name" 
-                                       id="name" class="form-control"/>
+                                       id="name" class="form-control" th:value="${organization.name}"/>
+                                <div th:if="${#fields.hasErrors('organization.name')}">
+                                    <p th:each="error : ${#fields.errors('organization.name')}" class="alert alert-danger"
+                                       th:text="${error}"> Bad Organization name </p>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -58,7 +62,11 @@
                                 Description</label>
                             <div class="col-9">
                                 <input type="text" name="description" 
-                                       id="description" class="form-control"/>
+                                       id="description" class="form-control" th:value="${organization.description}"/>
+                                <div th:if="${#fields.hasErrors('organization.name')}">
+                                    <p th:each="error : ${#fields.errors('organization.name')}" class="alert alert-danger"
+                                       th:text="${error}"> Bad Organization name </p>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -66,7 +74,29 @@
                                 Address</label>
                             <div class="col-9">
                                 <input type="text" name="address" 
-                                       id="address" class="form-control"/>
+                                       id="address" class="form-control" th:value="${organization.address}"/>
+                                <div th:if="${#fields.hasErrors('organization.address')}">
+                                    <p th:each="error : ${#fields.errors('organization.address')}" class="alert alert-danger"
+                                       th:text="${error}"> Bad Organization address </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="supes" class="col-3 col-form-label">
+                                Supes</label>
+                            <div class="col-9">
+                                <select multiple id="supes" name="supeId" 
+                                        class="form-control" >
+                                    <option th:each="supe : ${supes}" 
+                                            th:value="${supe.id}" 
+                                            th:text="${supe.name}">
+                                        Supe Name</option>
+                                </select>
+                                 <div th:if="${#fields.hasErrors('organization.supes')}">
+                                    <p th:each="error : ${#fields.errors('organization.supes')}" 
+                                       class="alert alert-danger" th:text="${error}"> 
+                                        Bad Supe </p>
+                                </div>
                             </div>
                         </div>
 
@@ -86,7 +116,7 @@
                                 <th>Name</th>
                                 <th>Description</th>
                                 <th>Address</th>
-<!--                                <th>Supers</th>-->
+                                <th>Details</th>
                                 <th>Edit</th>
                                 <th>Delete</th>
                             </tr>
@@ -97,9 +127,9 @@
                                 <td th:text="${organization.name}">Organization Name</td>
                                 <td th:text="${organization.description}">Organization Description</td>
                                 <td th:text="${organization.address}">Organization Address</td>
-<!--                                <td th:text="${organization.supe}">Organization Supes</td>-->
-                                <td>Edit</td>
-                                <td>Delete</td>
+                                <td><a href="#" th:href="@{/organizationDetail(id=${organization.id})}">Details</a></td>
+                                <td><a href="#" th:href="@{/editOrganization(id=${organization.id})}">Edit</a></td>
+                                <td><a href="#" th:href="@{/deleteOrganization(id=${organization.id})}">Delete</a></td>
                             </tr>
                         </tbody>
                     </table>

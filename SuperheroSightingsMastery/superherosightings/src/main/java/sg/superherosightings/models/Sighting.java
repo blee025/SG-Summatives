@@ -6,6 +6,10 @@
 package sg.superherosightings.models;
 
 import java.time.LocalDate;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  *
@@ -14,8 +18,14 @@ import java.time.LocalDate;
 public class Sighting {
     
     private int id;
+    
+    @Past(message = "Date must be in the past.")
+    @NotNull(message = "Date cannot be null.")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
+    
     private Location location;
+    
     private Supe supe;
 
     public int getId() {

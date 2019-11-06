@@ -1032,7 +1032,7 @@ public class SuperheroSightingsDaoDBTest {
             supeToAdd3.setPower(newPower);
             Supe supeAdded3 = toTest.addSupe(supeToAdd3);
 
-            toTest.deleteSupebyId(supeAdded2.getId());
+            toTest.deleteSupeById(supeAdded2.getId());
 
             List<Supe> toCheck = toTest.getAllSupes();
             Supe firstSupe = toCheck.get(0);
@@ -1080,7 +1080,7 @@ public class SuperheroSightingsDaoDBTest {
             supeToAdd3.setPower(newPower);
             Supe supeAdded3 = toTest.addSupe(supeToAdd3);
 
-            toTest.deleteSupebyId(9345);
+            toTest.deleteSupeById(9345);
             fail();
 
         } catch (SuperheroSightingsDaoException ex) {
@@ -1401,7 +1401,7 @@ public class SuperheroSightingsDaoDBTest {
             orgToAdd3.setAddress("26 Nelson Ave.");
             Organization orgAdded3 = toTest.addOrganization(orgToAdd3);
 
-            toTest.deleteOrganziationById(orgAdded2.getId());
+            toTest.deleteOrganizationById(orgAdded2.getId());
 
             List<Organization> allOrgs = toTest.getAllOrganizations();
 
@@ -1451,7 +1451,7 @@ public class SuperheroSightingsDaoDBTest {
             orgToAdd3.setAddress("26 Nelson Ave.");
             Organization orgAdded3 = toTest.addOrganization(orgToAdd3);
 
-            toTest.deleteOrganziationById(4386);
+            toTest.deleteOrganizationById(4386);
             fail();
 
         } catch (SuperheroSightingsDaoException ex) {
@@ -1607,7 +1607,7 @@ public class SuperheroSightingsDaoDBTest {
     }
 
     @Test
-    public void deleteSupeOrganizationGoldenPath() {
+    public void deleteSupeOrganizationBySupeIdGoldenPath() {
 
         try {
             Power powerToAdd = new Power();
@@ -1642,7 +1642,7 @@ public class SuperheroSightingsDaoDBTest {
             toTest.addSupeOrganization(orgAdded.getId(), addedSupe2.getId());
             toTest.addSupeOrganization(orgAdded.getId(), addedSupe3.getId());
 
-            toTest.deleteSupeOrganization(orgAdded.getId(), addedSupe1.getId());
+            toTest.deleteSupeOrganizationBySupeId(addedSupe1.getId());
 
             List<Supe> toCheck = toTest.getSupesByOrganization(orgAdded.getId());
 
@@ -1665,9 +1665,9 @@ public class SuperheroSightingsDaoDBTest {
             fail();
         }
     }
-
+    
     @Test
-    public void testDeleteSupeOrganizationByInvalidOrgId() {
+    public void deleteSupeOrganizationByInvalidSupeIdGoldenPath() {
 
         try {
             Power powerToAdd = new Power();
@@ -1702,8 +1702,10 @@ public class SuperheroSightingsDaoDBTest {
             toTest.addSupeOrganization(orgAdded.getId(), addedSupe2.getId());
             toTest.addSupeOrganization(orgAdded.getId(), addedSupe3.getId());
 
-            toTest.deleteSupeOrganization(2477, addedSupe1.getId());
+            toTest.deleteSupeOrganizationBySupeId(3928);
+
             fail();
+
         } catch (SuperheroSightingsDaoException ex) {
             fail();
         } catch (InvalidIdException ex) {
@@ -1711,7 +1713,7 @@ public class SuperheroSightingsDaoDBTest {
     }
 
     @Test
-    public void testDeleteSupeOrganizationByInvalidSupeId() {
+    public void deleteSupeOrganizationByOrganizationIdGoldenPath() {
 
         try {
             Power powerToAdd = new Power();
@@ -1742,17 +1744,191 @@ public class SuperheroSightingsDaoDBTest {
             orgToAdd.setAddress("21 Jump Street");
             Organization orgAdded = toTest.addOrganization(orgToAdd);
 
-            toTest.addSupeOrganization(orgAdded.getId(), addedSupe1.getId());
-            toTest.addSupeOrganization(orgAdded.getId(), addedSupe2.getId());
-            toTest.addSupeOrganization(orgAdded.getId(), addedSupe3.getId());
+            Organization orgToAdd2 = new Organization();
+            orgToAdd2.setName("Old Kids on the Block");
+            orgToAdd2.setDescription("Old Kids");
+            orgToAdd2.setAddress("22 Jump Street");
+            Organization orgAdded2 = toTest.addOrganization(orgToAdd2);
 
-            toTest.deleteSupeOrganization(orgAdded.getId(), 7332);
+            Organization orgToAdd3 = new Organization();
+            orgToAdd3.setName("The Cats");
+            orgToAdd3.setDescription("Feline");
+            orgToAdd3.setAddress("123 Haley Ave.");
+            Organization orgAdded3 = toTest.addOrganization(orgToAdd3);
+
+            toTest.addSupeOrganization(orgAdded.getId(), addedSupe1.getId());
+            toTest.addSupeOrganization(orgAdded2.getId(), addedSupe1.getId());
+            toTest.addSupeOrganization(orgAdded3.getId(), addedSupe1.getId());
+
+            toTest.deleteSupeOrganizationByOrganizationId(orgAdded.getId());
+
+            List<Organization> toCheck = toTest.getOrganizationsBySupe(addedSupe1.getId());
+
+            assertEquals(2, toCheck.size());
+
+            Organization secondOrg = toCheck.get(0);
+            Organization thirdOrg = toCheck.get(1);
+
+            assertEquals(orgAdded2.getId(), secondOrg.getId());
+            assertEquals("Old Kids on the Block", secondOrg.getName());
+            assertEquals("Old Kids", secondOrg.getDescription());
+            assertEquals("22 Jump Street", secondOrg.getAddress());
+
+            assertEquals(orgAdded3.getId(), thirdOrg.getId());
+            assertEquals("The Cats", thirdOrg.getName());
+            assertEquals("Feline", thirdOrg.getDescription());
+            assertEquals("123 Haley Ave.", thirdOrg.getAddress());
+
+        } catch (InvalidIdException | SuperheroSightingsDaoException ex) {
             fail();
+        }
+    }
+    
+    @Test
+    public void deleteSupeOrganizationByInvalidOrganizationIdGoldenPath() {
+
+        try {
+            Power powerToAdd = new Power();
+            powerToAdd.setName("Earth");
+            Power addedPower = toTest.addPower(powerToAdd);
+
+            Supe supeToAdd = new Supe();
+            supeToAdd.setName("Rocky");
+            supeToAdd.setDescription("Rock in your face!");
+            supeToAdd.setPower(addedPower);
+            Supe addedSupe1 = toTest.addSupe(supeToAdd);
+
+            Supe supeToAdd2 = new Supe();
+            supeToAdd2.setName("Sandy");
+            supeToAdd2.setDescription("Throws Sand - Ow!");
+            supeToAdd2.setPower(addedPower);
+            Supe addedSupe2 = toTest.addSupe(supeToAdd2);
+
+            Supe supeToAdd3 = new Supe();
+            supeToAdd3.setName("Rainbow Gal");
+            supeToAdd3.setDescription("Pretty colors!");
+            supeToAdd3.setPower(addedPower);
+            Supe addedSupe3 = toTest.addSupe(supeToAdd3);
+
+            Organization orgToAdd = new Organization();
+            orgToAdd.setName("New Kids on the Block");
+            orgToAdd.setDescription("New Kids");
+            orgToAdd.setAddress("21 Jump Street");
+            Organization orgAdded = toTest.addOrganization(orgToAdd);
+
+            Organization orgToAdd2 = new Organization();
+            orgToAdd2.setName("Old Kids on the Block");
+            orgToAdd2.setDescription("Old Kids");
+            orgToAdd2.setAddress("22 Jump Street");
+            Organization orgAdded2 = toTest.addOrganization(orgToAdd2);
+
+            Organization orgToAdd3 = new Organization();
+            orgToAdd3.setName("The Cats");
+            orgToAdd3.setDescription("Feline");
+            orgToAdd3.setAddress("123 Haley Ave.");
+            Organization orgAdded3 = toTest.addOrganization(orgToAdd3);
+
+            toTest.addSupeOrganization(orgAdded.getId(), addedSupe1.getId());
+            toTest.addSupeOrganization(orgAdded2.getId(), addedSupe1.getId());
+            toTest.addSupeOrganization(orgAdded3.getId(), addedSupe1.getId());
+
+            toTest.deleteSupeOrganizationByOrganizationId(8339);
+
+            fail();
+
         } catch (SuperheroSightingsDaoException ex) {
             fail();
         } catch (InvalidIdException ex) {
         }
     }
+
+//    @Test
+//    public void testDeleteSupeOrganizationByInvalidOrgId() {
+//
+//        try {
+//            Power powerToAdd = new Power();
+//            powerToAdd.setName("Earth");
+//            Power addedPower = toTest.addPower(powerToAdd);
+//
+//            Supe supeToAdd = new Supe();
+//            supeToAdd.setName("Rocky");
+//            supeToAdd.setDescription("Rock in your face!");
+//            supeToAdd.setPower(addedPower);
+//            Supe addedSupe1 = toTest.addSupe(supeToAdd);
+//
+//            Supe supeToAdd2 = new Supe();
+//            supeToAdd2.setName("Sandy");
+//            supeToAdd2.setDescription("Throws Sand - Ow!");
+//            supeToAdd2.setPower(addedPower);
+//            Supe addedSupe2 = toTest.addSupe(supeToAdd2);
+//
+//            Supe supeToAdd3 = new Supe();
+//            supeToAdd3.setName("Rainbow Gal");
+//            supeToAdd3.setDescription("Pretty colors!");
+//            supeToAdd3.setPower(addedPower);
+//            Supe addedSupe3 = toTest.addSupe(supeToAdd3);
+//
+//            Organization orgToAdd = new Organization();
+//            orgToAdd.setName("New Kids on the Block");
+//            orgToAdd.setDescription("New Kids");
+//            orgToAdd.setAddress("21 Jump Street");
+//            Organization orgAdded = toTest.addOrganization(orgToAdd);
+//
+//            toTest.addSupeOrganization(orgAdded.getId(), addedSupe1.getId());
+//            toTest.addSupeOrganization(orgAdded.getId(), addedSupe2.getId());
+//            toTest.addSupeOrganization(orgAdded.getId(), addedSupe3.getId());
+//
+//            toTest.deleteSupeOrganization(2477, addedSupe1.getId());
+//            fail();
+//        } catch (SuperheroSightingsDaoException ex) {
+//            fail();
+//        } catch (InvalidIdException ex) {
+//        }
+//    }
+//
+//    @Test
+//    public void testDeleteSupeOrganizationByInvalidSupeId() {
+//
+//        try {
+//            Power powerToAdd = new Power();
+//            powerToAdd.setName("Earth");
+//            Power addedPower = toTest.addPower(powerToAdd);
+//
+//            Supe supeToAdd = new Supe();
+//            supeToAdd.setName("Rocky");
+//            supeToAdd.setDescription("Rock in your face!");
+//            supeToAdd.setPower(addedPower);
+//            Supe addedSupe1 = toTest.addSupe(supeToAdd);
+//
+//            Supe supeToAdd2 = new Supe();
+//            supeToAdd2.setName("Sandy");
+//            supeToAdd2.setDescription("Throws Sand - Ow!");
+//            supeToAdd2.setPower(addedPower);
+//            Supe addedSupe2 = toTest.addSupe(supeToAdd2);
+//
+//            Supe supeToAdd3 = new Supe();
+//            supeToAdd3.setName("Rainbow Gal");
+//            supeToAdd3.setDescription("Pretty colors!");
+//            supeToAdd3.setPower(addedPower);
+//            Supe addedSupe3 = toTest.addSupe(supeToAdd3);
+//
+//            Organization orgToAdd = new Organization();
+//            orgToAdd.setName("New Kids on the Block");
+//            orgToAdd.setDescription("New Kids");
+//            orgToAdd.setAddress("21 Jump Street");
+//            Organization orgAdded = toTest.addOrganization(orgToAdd);
+//
+//            toTest.addSupeOrganization(orgAdded.getId(), addedSupe1.getId());
+//            toTest.addSupeOrganization(orgAdded.getId(), addedSupe2.getId());
+//            toTest.addSupeOrganization(orgAdded.getId(), addedSupe3.getId());
+//
+//            toTest.deleteSupeOrganization(orgAdded.getId(), 7332);
+//            fail();
+//        } catch (SuperheroSightingsDaoException ex) {
+//            fail();
+//        } catch (InvalidIdException ex) {
+//        }
+//    }
 
     //testing bad deletion if rows affected can be caught
     /**

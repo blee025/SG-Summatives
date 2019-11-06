@@ -204,7 +204,7 @@ public class SuperheroSightingsDaoDB implements SuperheroSightingsDao {
         } catch (InvalidIdException ex) {
             throw new InvalidIdException("Invalid Power Id requested.");
         }
-        
+
         String deleteSupeOrgs = "Delete So.*\n"
                 + "From SuperOrganizations So\n"
                 + "Inner Join Supes Su On So.SupeId = Su.Id\n"
@@ -340,14 +340,14 @@ public class SuperheroSightingsDaoDB implements SuperheroSightingsDao {
     }
 
     @Override
-    public void deleteSupebyId(int id) throws InvalidIdException {
+    public void deleteSupeById(int id) throws InvalidIdException {
 
         try {
             Supe toCheck = getSupeById(id);
         } catch (InvalidIdException ex) {
             throw new InvalidIdException("Invalid Supe Id requested.");
         }
-        
+
         String deleteSupeOrgs = "Delete \n"
                 + "From SuperOrganizations\n"
                 + "Where SupeId = ?";
@@ -460,14 +460,14 @@ public class SuperheroSightingsDaoDB implements SuperheroSightingsDao {
     }
 
     @Override
-    public void deleteOrganziationById(int id) throws InvalidIdException {
+    public void deleteOrganizationById(int id) throws InvalidIdException {
 
         try {
             Organization toCheck = getOrganizationById(id);
         } catch (InvalidIdException ex) {
             throw new InvalidIdException("Invalid Organization Id requested.");
         }
-        
+
         String deleteSupeOrgs = "Delete \n"
                 + "From SuperOrganizations \n"
                 + "Where OrganizationId = ?";
@@ -507,28 +507,43 @@ public class SuperheroSightingsDaoDB implements SuperheroSightingsDao {
     }
 
     @Override
-    public void deleteSupeOrganization(int organizationId, int supeId) throws InvalidIdException {
+    public void deleteSupeOrganizationBySupeId(int supeId) throws InvalidIdException {
 
         try {
-            Organization orgToCheck = getOrganizationById(organizationId);
-
             Supe supeToCheck = getSupeById(supeId);
         } catch (InvalidIdException ex) {
-            throw new InvalidIdException("Organization Id or Superhero Id is invalid", ex);
+            throw new InvalidIdException("Superhero Id is invalid", ex);
         }
 
         String deleteSupeOrgs = "Delete \n"
                 + "From SuperOrganizations \n"
-                + "Where OrganizationId = ? and SupeId = ?;";
+                + "Where SupeId = ?";
 
-        int rowsAffected = template.update(deleteSupeOrgs, organizationId, supeId);
+        int rowsAffected = template.update(deleteSupeOrgs, supeId);
 
         if (rowsAffected == 0) {
-            throw new InvalidIdException("Could not delete from SuperOrganzation with id's = " + organizationId + " , " + supeId); //might need to remove this
+            throw new InvalidIdException("Could not delete from SuperOrganzation with id " + supeId); //might need to remove this
         }
 
-        if (rowsAffected > 1) {
-            throw new InvalidIdException("ERROR: Invalid deletion into SuperOrganization TABLE.");
+    }
+
+    @Override
+    public void deleteSupeOrganizationByOrganizationId(int organizationId) throws InvalidIdException {
+        
+         try {
+            Organization orgToCheck = getOrganizationById(organizationId);
+        } catch (InvalidIdException ex) {
+            throw new InvalidIdException("Organization Id is invalid", ex);
+        }
+
+        String deleteSupeOrgs = "Delete \n"
+                + "From SuperOrganizations \n"
+                + "Where OrganizationId = ?";
+
+        int rowsAffected = template.update(deleteSupeOrgs, organizationId);
+
+        if (rowsAffected == 0) {
+            throw new InvalidIdException("Could not delete from SuperOrganzation with id " + organizationId); //might need to remove this
         }
     }
 
@@ -637,7 +652,7 @@ public class SuperheroSightingsDaoDB implements SuperheroSightingsDao {
         } catch (InvalidIdException ex) {
             throw new InvalidIdException("Invalid Location Id requested.");
         }
-        
+
         String deleteSightings = "Delete \n"
                 + "From Sightings \n"
                 + "Where LocationId = ?";
@@ -776,7 +791,6 @@ public class SuperheroSightingsDaoDB implements SuperheroSightingsDao {
         } catch (InvalidIdException ex) {
             throw new InvalidIdException("Invalid Sighting Id requested.");
         }
-        
 
         String deleteStatement = "Delete \n"
                 + "From Sightings \n"
@@ -820,6 +834,7 @@ public class SuperheroSightingsDaoDB implements SuperheroSightingsDao {
         template.update(deleteOrganizations);
 
     }
+
 
     private class PowerMapper implements RowMapper<Power> {
 
@@ -918,9 +933,7 @@ public class SuperheroSightingsDaoDB implements SuperheroSightingsDao {
 }
 
 //getsupesbylocation may need invalidIdException instead 
-
 //need to test for invalid dates? 
-
 //need to test for getall bad inputs??? Or just return blank list. Blank list is okay.
 
 //transactions needed
