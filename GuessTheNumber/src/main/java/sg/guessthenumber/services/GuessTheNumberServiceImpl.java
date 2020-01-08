@@ -43,10 +43,13 @@ public class GuessTheNumberServiceImpl implements GuessTheNumberService {
         int toReturn = -1;
 
         int targetNumber = generateNewTargetNumber();
+        //random number generator
 
         toReturn = dao.createNewGame(targetNumber);
+        //call DAO class to create new game with newly generated random number
 
         if (toReturn == -1) {
+            //if target number is still -1, throw unable to create new game exception
             throw new GuessTheNumberServiceException("Unable to create new game.");
         }
 
@@ -61,28 +64,31 @@ public class GuessTheNumberServiceImpl implements GuessTheNumberService {
         Game requestedGame = new Game();
         try {
             requestedGame = dao.getGameById(newRound.getGameId());
+            //request DAO to check if there is a valid game ID in mySQL, if invalid, throw invalidGame exception
         } catch (InvalidGameIdDaoException ex) {
             throw new InvalidGameIdServiceException("Requested GameId " + newRound.getGameId() + " could not be found.");
         }
 
-        int requestedGameId = requestedGame.getGameId();
+        int requestedGameId = requestedGame.getGameId(); //store gameId once verified
 
         if (requestedGame.getGameFinished() == true) {
+            //check if game is already completed
             throw new GameCompletedException("The requested GameId " + requestedGameId + " has been completed.");
         }
 
         boolean duplicates = hasDuplicates(newRound.getGuessNumber());
+        //need to verify if user guess has duplicate numbers
 
         if (!duplicates) {
 
-            int target = requestedGame.getTargetNumber();
-            int guess = newRound.getGuessNumber();
+            int target = requestedGame.getTargetNumber(); //obtain targetnumber 
+            int guess = newRound.getGuessNumber(); 
 
-            int exactNumbers = computeExact(target, guess);
-            int partialNumbers = computePartial(target, guess);
+            int exactNumbers = computeExact(target, guess); //check guess vs actual target for extact number of correct numbers in thousandths, hundredths, tenth and ones place
+            int partialNumbers = computePartial(target, guess); //check guess for correct numbers but in the wrong thousandths, hundredths, tenth and ones place
 
-            newRound.setPartialMatchCount(partialNumbers);
-            newRound.setExactMatchCount(exactNumbers);
+            newRound.setPartialMatchCount(partialNumbers); //update round with partial matches for current guess
+            newRound.setExactMatchCount(exactNumbers); //update round with exact matches for current guess
 
             String timeStamp = getTimeStamp();
 
@@ -90,6 +96,7 @@ public class GuessTheNumberServiceImpl implements GuessTheNumberService {
 
             try {
                 toReturn = dao.createNewRoundByGameId(newRound);
+                //submit newly created round with partial and exact matches to DAO class to write to mySQL database
             } catch (GuessTheNumberDaoException | InvalidTimeStampDaoException ex) {
                 throw new GuessTheNumberServiceException("Could not submit new Round.", ex);
             }
@@ -102,6 +109,7 @@ public class GuessTheNumberServiceImpl implements GuessTheNumberService {
                 }
             }
         } else {
+            //if there are duplicate numbers in guess, exception will be thrown
             throw new InvalidGuessServiceException("Guess is invalid.");
         }
 
@@ -113,11 +121,12 @@ public class GuessTheNumberServiceImpl implements GuessTheNumberService {
 
         List<Round> toReturn = new ArrayList();
 
-        boolean validId = checkValidId(id);
+        boolean validId = checkValidId(id); //verify requested game exists in mySQL database - all games
 
         if (validId == true) {
             try {
                 toReturn = dao.getRoundsByGameId(id);
+                //request DAO class to obtain all rounds associated with valid GameId, else throw exception if there are no rounds to be found
             } catch (InvalidGameIdDaoException ex) {
                 throw new GuessTheNumberServiceException("Unable to get rounds by GameId: " + id, ex);
             }
@@ -135,6 +144,7 @@ public class GuessTheNumberServiceImpl implements GuessTheNumberService {
         List<Game> toReturn;
         try {
             toReturn = dao.getAllGames();
+            //request DAO class to obtain ArrayList of games from mySQL
         } catch (GuessTheNumberDaoException ex) {
             throw new GuessTheNumberServiceException("Unable to get all games.", ex);
         }
@@ -142,6 +152,7 @@ public class GuessTheNumberServiceImpl implements GuessTheNumberService {
         for (Game toCheck : toReturn) {
             if (toCheck.getGameFinished() == false) {
                 toCheck.setTargetNumber(0);
+                //target numbers for active games need to be hidden from user is game is not complete, targetnumber presented as 0 
             }
         }
 
@@ -159,11 +170,13 @@ public class GuessTheNumberServiceImpl implements GuessTheNumberService {
         if (validId == true) {
             try {
                 toReturn = dao.getGameById(id);
+                //request game in mySQL database via DAO class via JBDC
             } catch (InvalidGameIdDaoException ex) {
                 throw new GuessTheNumberServiceException("Unable to get GameId: " + id, ex);
             }
             if (toReturn.getGameFinished() == false) {
                 toReturn.setTargetNumber(0);
+                //target number needs to be hidden if game is not complete
             }
         } else {
             throw new InvalidGameIdServiceException("Requested GameId " + id + " could not be found.");
@@ -177,11 +190,13 @@ public class GuessTheNumberServiceImpl implements GuessTheNumberService {
         List<Integer> avail = new ArrayList<>(Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 9));
         int toReturn = 0;
         for (int i = 0; i < 4; i++) {
+            //target number will 4 digits max
             toReturn *= 10;
             int digitIndex = rng.nextInt(avail.size());
             int digit = avail.get(digitIndex);
             toReturn += digit;
             avail.remove(digitIndex);
+            //from available integer list, random number is chosen, then removed from list. Looped four times until target number is fully generated
         }
         return toReturn;
     }
@@ -199,7 +214,7 @@ public class GuessTheNumberServiceImpl implements GuessTheNumberService {
             } else {
                 seenDigit[onesPlace] = true;
             }
-
+            //looped 4 times to check each index in user's guess. Boolean array will be switched to true for digits once seen. If digit is seen twice, guess will be noted as duplicate incorrect guess
         }
         return toReturn;
 
@@ -210,11 +225,13 @@ public class GuessTheNumberServiceImpl implements GuessTheNumberService {
         for (int i = 0; i < 4; i++) {
             int targetOnes = target % 10;
             int guessOnes = guess % 10;
+            // %10 will target the ones, tenth, hundredth and then finally the thousandth place (remainder)
             if (targetOnes == guessOnes) {
                 toReturn++;
             }
             target /= 10;
             guess /= 10;
+            // /10 to trim/remove the number in the ones, tenth, hundredth and then finally the thousandth place
         }
         return toReturn;
     }
@@ -228,6 +245,7 @@ public class GuessTheNumberServiceImpl implements GuessTheNumberService {
         }
         if (guess < 1000) {
             g = "0" + g;
+            //for guesses/target less than 1000, 0 is needed in the thousandth place to compute partials
         }
         for (int i = 0; i < 4; i++) {
             char gc = g.charAt(i);
@@ -239,6 +257,7 @@ public class GuessTheNumberServiceImpl implements GuessTheNumberService {
                     }
                 }
             }
+            //double loop to check if the string characters match between target and guess, however i and j cannot be the same index. Character 1 of the guess only compared with character 2, 3, and 4 of the target string.
         }
         return toReturn;
     }
@@ -251,6 +270,7 @@ public class GuessTheNumberServiceImpl implements GuessTheNumberService {
         for (Game toCheck : allGames) {
             if (id == toCheck.getGameId()) {
                 toReturn = true;
+                //check if id is found in array list of all games
             }
         }
 

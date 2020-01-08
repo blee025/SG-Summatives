@@ -41,6 +41,7 @@ public class VendingMachineServiceLayerImpl implements VendingMachineServiceLaye
 
         try {
             return dao.getAll();
+            //requests DAO class to provide all current items in list array
         } catch (VendingMachineDaoException ex) {
             throw new VendingMachineServiceException("Unable to get item list" + ex.getMessage(), ex);
         }
@@ -86,6 +87,7 @@ public class VendingMachineServiceLayerImpl implements VendingMachineServiceLaye
         try {
             if (userChosenId >= getMinId() && userChosenId <= getMaxId()) {
                 validId = true;
+                //verify item ID is within bounds
             } else {
                 throw new InvalidIdException("Invalid ID");
             }
@@ -105,8 +107,10 @@ public class VendingMachineServiceLayerImpl implements VendingMachineServiceLaye
             boolean valid = false;
             while (!valid) {
                 if (selectedItem.getQuantity() >= quantityRequested) {
+                    //verifies quantity requested is available, otherwise inventory exception thrown
                     quantityRequestedService = quantityRequested;
                     requiredCost = selectedItem.getPrice().multiply(BigDecimal.valueOf(quantityRequestedService));
+                    //if quantity is valid, compute cost for item(s)
                     valid = true;
                 } else {
                     throw new NoItemInventoryException("Not enough quantity.");

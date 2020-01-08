@@ -133,3 +133,5 @@ public class VendingMachineController {
     }
 
 }
+
+//vending machine controller needs to getallitems, and dispense items successfully 
